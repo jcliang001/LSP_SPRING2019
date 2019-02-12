@@ -17,9 +17,13 @@ class ConsCell:
     4
     """
     def __init__(self, car, cdr):
-        raise NotImplementedError("Deliverable 1")
+        self.car = car
+        self.cdr = cdr
+        
 
     def __eq__(self, other):
+        return self.car == other.car and self.cdr == other.cdr
+
         """
         Two cons cells are equal if each of their ``car`` and
         ``cdr`` are equal:
@@ -42,7 +46,7 @@ class ConsCell:
         Should return ``False`` if ``other`` is not an instance of a
         ``ConsCell``.
         """
-        raise NotImplementedError("Deliverable 1")
+
 
     def __repr__(self):
         """
@@ -85,7 +89,8 @@ class ConsList(ConsCell, abc.Sequence):
         >>> cell.cdr
         NIL
         """
-        raise NotImplementedError("Deliverable 1")
+        self.car = car
+        self.cdr = cdr
 
     @classmethod
     def from_iterable(cls, it):
@@ -137,7 +142,11 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(1) for each yield
         :Space complexity: O(1)
         """
-        raise NotImplementedError("Deliverable 1")
+        while self is not None:
+            yield self.car
+            self = self.cdr + 1
+        
+
 
     def cells(self):
         """
