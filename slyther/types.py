@@ -22,8 +22,10 @@ class ConsCell:
         
 
     def __eq__(self, other):
-        return self.car == other.car and self.cdr == other.cdr
-
+        if isinstance(self, type(other)):
+            return other.car == self.car and other.cdr == other.cdr
+        else:
+            return false
         """
         Two cons cells are equal if each of their ``car`` and
         ``cdr`` are equal:
@@ -49,6 +51,7 @@ class ConsCell:
 
 
     def __repr__(self):
+        return "(cons {!r} {!r})".format(self.car, self.cdr)
         """
         A cons cell should ``repr`` itself in a format that would
         be parsable and evaluable to our language.
@@ -63,7 +66,8 @@ class ConsCell:
             The string formatting specifier ``!r`` will get you the
             ``repr`` of an object.
         """
-        raise NotImplementedError("Deliverable 1")
+
+        
 
 
 class ConsList(ConsCell, abc.Sequence):
