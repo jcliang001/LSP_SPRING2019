@@ -94,7 +94,13 @@ class ConsList(ConsCell, abc.Sequence):
         NIL
         """
         self.car = car
-        self.cdr = cdr
+        if (cdr is None):
+            self.cdr = NIL
+        elif isinstance(cdr, ConsList):
+            self.cdr = cdr
+        else:
+            raise TypeError("cdr must be a ConsList")
+
 
     @classmethod
     def from_iterable(cls, it):
