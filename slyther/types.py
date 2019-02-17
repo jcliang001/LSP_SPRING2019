@@ -209,8 +209,12 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(1)
         """
-        raise NotImplementedError("Deliverable 1")
-
+        size = 0
+        while self is not NIL:
+            size += 1
+            self = self.cdr
+        return size
+    
     def __contains__(self, p):
         """
         Return ``True`` if the list contains an element ``p``, ``False``
