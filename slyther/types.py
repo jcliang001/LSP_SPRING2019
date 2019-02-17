@@ -215,7 +215,7 @@ class ConsList(ConsCell, abc.Sequence):
             self = self.cdr
         return size
     
-    def __contains__(self, p):
+    def __contains__(self, p): # STUCK HERE
         """
         Return ``True`` if the list contains an element ``p``, ``False``
         otherwise. A list is said to contain an element ``p`` iff there is any
@@ -239,14 +239,14 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(1)
         """
-        raise NotImplementedError("Deliverable 1")
+        contains_elem = false
+        while self is not None:
+            if(self == p):
+                contains_elem = true
+                return contains_elem
+        return contains_elem
 
-
-
-
-
-
-    def __reversed__(self):
+    def __reversed__(self): # STUCK HERE 2
         """
         Iterate over the elements of our list, reversed.
 
@@ -266,8 +266,14 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(n)
         """
-        raise NotImplementedError("Deliverable 1")
-
+        i = 0
+        stack = [None] * len(self)
+        while self is not Nil:
+            stack[i] = self
+            self = self.cdr
+        while not stack:
+            yield stack.pop()
+      
     def __bool__(self):
         """ NilType overrides this to be ``False``. """
         return True
