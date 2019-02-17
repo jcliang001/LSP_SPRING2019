@@ -239,11 +239,11 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(1)
         """
-        contains_elem = false
+        contains_elem = False
         while self is not NIL:
-            if(self == p):
-                contains_elem = true
-                return contains_elem
+            if(self.car == p):
+                contains_elem = True
+            self = self.cdr
         return contains_elem
 
     def __reversed__(self): # STUCK HERE 2
