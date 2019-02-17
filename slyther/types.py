@@ -240,7 +240,7 @@ class ConsList(ConsCell, abc.Sequence):
         :Space complexity: O(1)
         """
         contains_elem = false
-        while self is not None:
+        while self is not NIL:
             if(self == p):
                 contains_elem = true
                 return contains_elem
