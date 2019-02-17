@@ -215,7 +215,7 @@ class ConsList(ConsCell, abc.Sequence):
             self = self.cdr
         return size
     
-    def __contains__(self, p): # STUCK HERE
+    def __contains__(self, p): 
         """
         Return ``True`` if the list contains an element ``p``, ``False``
         otherwise. A list is said to contain an element ``p`` iff there is any
@@ -266,14 +266,17 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(n)
         """
-        i = 0
-        stack = [None] * len(self)
-        while self is not Nil:
-            stack[i] = self
+        list_object = []
+        while self is not NIL:
+            list_object.append(self.car)
             self = self.cdr
-        while not stack:
-            yield stack.pop()
-      
+        
+        list_object.reverse()
+        iterator = iter(list_object)
+        return iterator
+
+        
+
     def __bool__(self):
         """ NilType overrides this to be ``False``. """
         return True
