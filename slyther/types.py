@@ -128,7 +128,7 @@ class ConsList(ConsCell, abc.Sequence):
             return ConsList(iterator[0])
         newIterator = iter(iterator[1:])
 
-        return (ConsList(iterator[0], cls.from_iterable(newIteratorp)))
+        return (ConsList(iterator[0], cls.from_iterable(newIterator)))
 
 
     def __getitem__(self, idx):
