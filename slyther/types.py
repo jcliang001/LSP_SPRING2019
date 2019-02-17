@@ -192,7 +192,9 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(1) for each yield
         :Space complexity: O(1)
         """
-        raise NotImplementedError("Deliverable 1")
+        while self is not NIL:
+            yield self
+            self = self.cdr
 
     def __len__(self):
         """
