@@ -169,9 +169,9 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(1) for each yield
         :Space complexity: O(1)
         """
-        while self is not None:
+        while self is not NIL:
             yield self.car
-            self = next(self.cdr)
+            self = self.cdr
 
     def cells(self):
         """
