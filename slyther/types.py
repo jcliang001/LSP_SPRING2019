@@ -140,9 +140,15 @@ class ConsList(ConsCell, abc.Sequence):
         >>> [lst[i] == clst[i] for i in range(len(lst))]
         [True, True, True, True, True, True]
         """
-        if self.cdr is not None:
-            if len(self.cdr) > idx:
-                return self.cdr[idx]
+        result = self
+        while idx > 0:
+            if result.cdr == NIL:
+                return result.car
+            result = result.cdr
+            idx -= 1
+ 
+        return result.car
+
 
     def __iter__(self):
         """
