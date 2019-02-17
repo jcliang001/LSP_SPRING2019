@@ -120,7 +120,16 @@ class ConsList(ConsCell, abc.Sequence):
         :Space complexity: O(n) ``ConsList`` objects,
                            O(1) everything else (including stack frames!)
         """
-        raise NotImplementedError("Deliverable 1")
+        iterator = list(it)
+
+        if(len(iterator) == 0):
+            return NIL
+        if(len(iterator) == 1):
+            return ConsList(iterator[0])
+        newIterator = iter(iterator[1:])
+
+        return (ConsList(iterator[0], cls.from_iterable(newIteratorp)))
+
 
     def __getitem__(self, idx):
         """
@@ -131,7 +140,9 @@ class ConsList(ConsCell, abc.Sequence):
         >>> [lst[i] == clst[i] for i in range(len(lst))]
         [True, True, True, True, True, True]
         """
-        raise NotImplementedError("Deliverable 1")
+        if self.cdr is not None:
+            if len(self.cdr) > idx:
+                return self.cdr[idx]
 
     def __iter__(self):
         """
@@ -154,9 +165,7 @@ class ConsList(ConsCell, abc.Sequence):
         """
         while self is not None:
             yield self.car
-            self = self.cdr + 1
-        
-
+            self = next(self.cdr)
 
     def cells(self):
         """
@@ -219,6 +228,11 @@ class ConsList(ConsCell, abc.Sequence):
         :Space complexity: O(1)
         """
         raise NotImplementedError("Deliverable 1")
+
+
+
+
+
 
     def __reversed__(self):
         """
@@ -284,7 +298,7 @@ class ConsList(ConsCell, abc.Sequence):
         >>> ConsList.from_iterable([1, 2, 3])
         (list 1 2 3)
         """
-        raise NotImplementedError("Deliverable 1")
+        return "(list !r)".format(self.cdr)
 
 
 class NilType(ConsList):
