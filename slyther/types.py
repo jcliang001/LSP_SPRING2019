@@ -266,10 +266,12 @@ class ConsList(ConsCell, abc.Sequence):
         :Time complexity: O(n), where n is the length of the list.
         :Space complexity: O(n)
         """
-        list_object = []
+        i = 0
+        list_object = [None] * len(self)
         while self is not NIL:
-            list_object.append(self.car)
+            list_object[i] = self.car
             self = self.cdr
+            i += 1
         
         list_object.reverse()
         iterator = iter(list_object)
