@@ -312,7 +312,20 @@ class ConsList(ConsCell, abc.Sequence):
         >>> SExpression.from_iterable(l2) == NIL
         False
         """
-        raise NotImplementedError("Deliverable 1")
+        while self is not NIL and other is not NIL:
+            if isinstance(self, type(other)):
+                if self.car != other.car:
+                    return False
+
+            self = self.cdr
+            other = other.cdr
+
+        if self is NIL and other is not NIL:
+            return False
+        if other is NIL and self is not NIL:
+            return False
+
+        return True
 
     def __repr__(self):
         """
@@ -321,7 +334,16 @@ class ConsList(ConsCell, abc.Sequence):
         >>> ConsList.from_iterable([1, 2, 3])
         (list 1 2 3)
         """
-        return "(list !r)".format(self.cdr)
+        i = 0
+        list_object = [None] * len(self)
+        
+        while self is not NIL:
+            list_object[i] = self.car
+            self = self.cdr
+            i += 1
+
+        # TODO: need to format (take out brackets from list)
+        return "(list {!r})".format(list_object)
 
 
 class NilType(ConsList):
@@ -424,6 +446,7 @@ def cons(car, cdr) -> ConsCell:
     >>> cons(5, SExpression(4, NIL))
     (5 4)
     """
+
     raise NotImplementedError("Deliverable 1")
 
 
