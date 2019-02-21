@@ -130,7 +130,7 @@ class ConsList(ConsCell, abc.Sequence):
             nextCell.cdr = cls(i) # move to the next generator
             nextCell = nextCell.cdr 
         return cell # return the cell
-    
+
     def __getitem__(self, idx):
         """
         Get item at index ``idx``:
@@ -446,11 +446,16 @@ def cons(car, cdr) -> ConsCell:
     (5 4)
     """
 
-    #if cdr is NIL:
+    #if cdr is NIL
         #return "(list {!r})".format()
-    
-    raise NotImplementedError("Deliverable 1")
-
+    if cdr is NIL:
+        return ConsList(car)
+    elif isinstance(cdr, SExpression):
+        return SExpression(car, cdr)
+    elif isinstance(cdr, ConsList):
+        return ConsList(car, cdr)
+    else:
+        return ConsCell(car, cdr)
 
 class Variable:
     """
