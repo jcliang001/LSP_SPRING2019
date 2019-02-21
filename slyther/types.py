@@ -342,9 +342,8 @@ class ConsList(ConsCell, abc.Sequence):
             self = self.cdr
             i += 1
 
-        # TODO: need to format (take out brackets from list)
-        return "(list {!r})".format(list_object)
-
+        # TODO: need to format (take out ' ' from list)
+        return '(list {})'.format(' '.join(map(str, list_object)))
 
 class NilType(ConsList):
     """
@@ -446,6 +445,9 @@ def cons(car, cdr) -> ConsCell:
     >>> cons(5, SExpression(4, NIL))
     (5 4)
     """
+
+    #if cdr is NIL:
+        #return "(list {!r})".format()
     
     raise NotImplementedError("Deliverable 1")
 
