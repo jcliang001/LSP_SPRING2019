@@ -19,7 +19,6 @@ class ConsCell:
     def __init__(self, car, cdr):
         self.car = car
         self.cdr = cdr
-        
 
     def __eq__(self, other):
         if isinstance(self, type(other)):
@@ -48,10 +47,9 @@ class ConsCell:
         Should return ``False`` if ``other`` is not an instance of a
         ``ConsCell``.
         """
-
+        return "(cons {!r} {!r})".format(self.car, self.cdr)
 
     def __repr__(self):
-        return "(cons {!r} {!r})".format(self.car, self.cdr)
         """
         A cons cell should ``repr`` itself in a format that would
         be parsable and evaluable to our language.
@@ -66,8 +64,7 @@ class ConsCell:
             The string formatting specifier ``!r`` will get you the
             ``repr`` of an object.
         """
-
-        
+        return "(cons {!r} {!r})".format(self.car, self.cdr)
 
 
 class ConsList(ConsCell, abc.Sequence):
@@ -101,7 +98,6 @@ class ConsList(ConsCell, abc.Sequence):
         else:
             raise TypeError("cdr must be a ConsList")
 
-
     @classmethod
     def from_iterable(cls, it):
         """
@@ -120,16 +116,16 @@ class ConsList(ConsCell, abc.Sequence):
         :Space complexity: O(n) ``ConsList`` objects,
                            O(1) everything else (including stack frames!)
         """
-        gen = iter(it) # turn the it into generator
+        gen = iter(it)  # turn the it into generator
         try:
             cell = cls(next(gen))
-        except StopIteration: # avoid stop iterator exception
+        except StopIteration:  # avoid stop iterator exception
             return NIL
-        nextCell = cell
+        next_cell = cell
         for i in gen:
-            nextCell.cdr = cls(i) # move to the next generator
-            nextCell = nextCell.cdr 
-        return cell # return the cell
+            next_cell.cdr = cls(i)  # move to the next generator
+            next_cell = next_cell.cdr
+        return cell  # return the cell
 
     def __getitem__(self, idx):
         """
@@ -146,9 +142,8 @@ class ConsList(ConsCell, abc.Sequence):
                 return result.car
             result = result.cdr
             idx -= 1
- 
-        return result.car
 
+        return result.car
 
     def __iter__(self):
         """
@@ -214,8 +209,8 @@ class ConsList(ConsCell, abc.Sequence):
             size += 1
             self = self.cdr
         return size
-    
-    def __contains__(self, p): 
+
+    def __contains__(self, p):
         """
         Return ``True`` if the list contains an element ``p``, ``False``
         otherwise. A list is said to contain an element ``p`` iff there is any
@@ -272,12 +267,10 @@ class ConsList(ConsCell, abc.Sequence):
             list_object[i] = self.car
             self = self.cdr
             i += 1
-        
+
         list_object.reverse()
         iterator = iter(list_object)
         return iterator
-
-        
 
     def __bool__(self):
         """ NilType overrides this to be ``False``. """
@@ -336,6 +329,7 @@ class ConsList(ConsCell, abc.Sequence):
         """
         list_object = ' '.join(map(repr, self))
         return '(list {})'.format(list_object)
+
 
 class NilType(ConsList):
     """
@@ -439,8 +433,6 @@ def cons(car, cdr) -> ConsCell:
     (5 4)
     """
 
-    #if cdr is NIL
-        #return "(list {!r})".format()
     if cdr is NIL:
         return ConsList(car)
     elif isinstance(cdr, SExpression):
@@ -449,6 +441,7 @@ def cons(car, cdr) -> ConsCell:
         return ConsList(car, cdr)
     else:
         return ConsCell(car, cdr)
+
 
 class Variable:
     """
@@ -497,7 +490,7 @@ class LexicalVarStorage:
         y 12
         z 13
         """
-        union= {} 
+        union = {}
         union.update(self.environ)
         union.update(self.local)
         return union
@@ -535,14 +528,15 @@ class LexicalVarStorage:
             ...
         KeyError: "Undefined variable 'bar'"
         """
-        
-        newDict = self.fork()
-        
-        if key in newDict.keys():
-            val = newDict[key]
+
+        new_dict = self.fork()
+
+        if key in new_dict.keys():
+            val = new_dict[key]
             return val
         else:
             raise KeyError("Undefined variable '{}'".format(key))
+
 
 class Quoted:
     """
