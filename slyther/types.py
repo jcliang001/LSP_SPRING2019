@@ -120,17 +120,17 @@ class ConsList(ConsCell, abc.Sequence):
         :Space complexity: O(n) ``ConsList`` objects,
                            O(1) everything else (including stack frames!)
         """
-        iterator = list(it)
-
-        if(len(iterator) == 0):
+        gen = iter(it) # turn the it into generator
+        try:
+            cell = cls(next(gen))
+        except StopIteration: # avoid stop iterator exception
             return NIL
-        if(len(iterator) == 1):
-            return ConsList(iterator[0])
-        newIterator = iter(iterator[1:])
-
-        return (ConsList(iterator[0], cls.from_iterable(newIterator)))
-
-
+        nextCell = cell
+        for i in gen:
+            nextCell.cdr = cls(i) # move to the next generator
+            nextCell = nextCell.cdr 
+        return cell # return the cell
+    
     def __getitem__(self, idx):
         """
         Get item at index ``idx``:
