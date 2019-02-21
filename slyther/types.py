@@ -504,8 +504,11 @@ class LexicalVarStorage:
         y 12
         z 13
         """
-        raise NotImplementedError("Deliverable 1")
-    
+        union= {} 
+        union.update(self.environ)
+        union.update(self.local)
+        return union
+
     def put(self, name: str, value) -> None:
         """
         Put a **new** variable in the local environment, giving
