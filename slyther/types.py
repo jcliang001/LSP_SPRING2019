@@ -504,7 +504,12 @@ class LexicalVarStorage:
         y 12
         z 13
         """
-        raise NotImplementedError("Deliverable 1")
+        union = {}
+        for k, v in self.environ.items():
+            union[k] = v
+        for k, v in self.local.items():
+            union[k] = v
+        return union
 
     def put(self, name: str, value) -> None:
         """
