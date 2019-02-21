@@ -504,7 +504,11 @@ class LexicalVarStorage:
         y 12
         z 13
         """
-        raise NotImplementedError("Deliverable 1")
+        result= {} 
+        result.update(self.environ)
+        result.update(self.local)
+        return result
+
 
     def put(self, name: str, value) -> None:
         """
@@ -539,8 +543,14 @@ class LexicalVarStorage:
             ...
         KeyError: "Undefined variable 'bar'"
         """
-        raise NotImplementedError("Deliverable 1")
-
+        
+        newDict = self.fork()
+        
+        if key in newDict.keys():
+            val = newDict[key]
+            return val
+        else:
+            raise KeyError("Undefined variable '{}'".format(key))
 
 class Quoted:
     """
