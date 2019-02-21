@@ -334,7 +334,7 @@ class ConsList(ConsCell, abc.Sequence):
         >>> ConsList.from_iterable([1, 2, 3])
         (list 1 2 3)
         """
-        list_object = ' '.join(map(str, self))
+        list_object = ' '.join(map(repr, self))
         return '(list {})'.format(list_object)
 
 class NilType(ConsList):
