@@ -504,13 +504,8 @@ class LexicalVarStorage:
         y 12
         z 13
         """
-        union = {}
-        for k, v in self.environ.items():
-            union[k] = v
-        for k, v in self.local.items():
-            union[k] = v
-        return union
-
+        raise NotImplementedError("Deliverable 1")
+    
     def put(self, name: str, value) -> None:
         """
         Put a **new** variable in the local environment, giving
@@ -544,8 +539,14 @@ class LexicalVarStorage:
             ...
         KeyError: "Undefined variable 'bar'"
         """
-        raise NotImplementedError("Deliverable 1")
-
+        
+        newDict = self.fork()
+        
+        if key in newDict.keys():
+            val = newDict[key]
+            return val
+        else:
+            raise KeyError("Undefined variable '{}'".format(key))
 
 class Quoted:
     """
