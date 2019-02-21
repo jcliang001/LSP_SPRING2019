@@ -25,7 +25,7 @@ class ConsCell:
         if isinstance(self, type(other)):
             return other.car == self.car and other.cdr == other.cdr
         else:
-            return false
+            return False
         """
         Two cons cells are equal if each of their ``car`` and
         ``cdr`` are equal:
@@ -446,7 +446,7 @@ def cons(car, cdr) -> ConsCell:
     >>> cons(5, SExpression(4, NIL))
     (5 4)
     """
-
+    
     raise NotImplementedError("Deliverable 1")
 
 
