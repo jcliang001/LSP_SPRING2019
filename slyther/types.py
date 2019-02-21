@@ -246,7 +246,7 @@ class ConsList(ConsCell, abc.Sequence):
             self = self.cdr
         return contains_elem
 
-    def __reversed__(self): # STUCK HERE 2
+    def __reversed__(self):
         """
         Iterate over the elements of our list, reversed.
 
@@ -334,16 +334,8 @@ class ConsList(ConsCell, abc.Sequence):
         >>> ConsList.from_iterable([1, 2, 3])
         (list 1 2 3)
         """
-        i = 0
-        list_object = [None] * len(self)
-        
-        while self is not NIL:
-            list_object[i] = self.car
-            self = self.cdr
-            i += 1
-
-        # TODO: need to format (take out ' ' from list)
-        return '(list {})'.format(' '.join(map(str, list_object)))
+        list_object = ' '.join(map(str, self))
+        return '(list {})'.format(list_object)
 
 class NilType(ConsList):
     """
@@ -379,7 +371,8 @@ class NilType(ConsList):
 
     def __repr__(self):
         """
-        Represent ourselves in SlytherLisp evaluable format
+        Represent ourselves
+        return 'NIL'  in SlytherLisp evaluable format
         """
         return 'NIL'
 
