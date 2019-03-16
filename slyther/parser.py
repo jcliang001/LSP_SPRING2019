@@ -225,11 +225,11 @@ for item in re.findall("(\()|(\))|(\')|([-+]?[0-9]*\.[0-9]+.)|([1-9][0-9]*)|(\s+
         print("float")
     elif item[4]:
         print("Int")
-    elif item[6]:
-        print("Str")
-    elif item[7]:
-        print("#! com")
     elif item[8]:
+        print("Str")
+    elif item[6]:
+        print("#! com")
+    elif item[7]:
         print("; com")
     elif item[9]:
          print("symbol")
