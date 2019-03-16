@@ -208,7 +208,10 @@ def lex(code):
     >>> list(lex("'"))
     [Quote]
     """
-    raise NotImplementedError("Deliverable 2")
+    # return list(generate)
+    #https://effbot.org/zone/xml-scanner.htm
+    #I spent so much on this and found this website is really helpful
+
 
 
 def parse_strlit(tok):
