@@ -223,8 +223,7 @@ def lex(code):
           (^[A-z]+[0-9]*)''' ,re.VERBOSE)
  # 0     1       2       3       4       5       6       7       8       9
  # (     )       '       float   int    space    #!     ;.       string  symbol
-    
-       
+
 
 
 def parse_strlit(tok):
