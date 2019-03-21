@@ -211,28 +211,19 @@ def lex(code):
     # return list(generate)
     #https://effbot.org/zone/xml-scanner.htm
     #I spent so much on this and found this website is really helpful
-    
-expr = "(print')9.333 56 fun #!comment ;dfd"
- 
-for item in re.findall("(\()|(\))|(\')|([-+]?[0-9]*\.[0-9]+.)|([1-9][0-9]*)|(\s+)|(^#!.*)|(;.*$)|(\"([^\\\"]|\\.)*\")|()", expr):
-    if item[0]:
-        print("Lp")
-    elif item[1]:
-        print("Rp")
-    elif item[2]:
-        print("Quote")    
-    elif item[3]:
-        print("float")
-    elif item[4]:
-        print("Int")
-    elif item[8]:
-        print("Str")
-    elif item[6]:
-        print("#! com")
-    elif item[7]:
-        print("; com")
-    elif item[9]:
-         print("symbol")
+
+    p = re.compile(r'''(\()|   
+                       (\))|
+                       (\')|
+                 ([-+]?[0-9]*\.[0-9]+)|
+                 ([-+]?[1-9][0-9]*)|
+                 (\s+)|
+                 (^\#!.*)|
+                 (;.*$)|
+                 (\"(\\.|[^"\\])*\")|
+                (^[A-z]+[0-9]*)''' ,re.VERBOSE)
+ # 0     1       2       3       4       5       6       7       8       9
+ # (     )       '       float   int    space    #!     ;.       string  symbol
 
 
 
