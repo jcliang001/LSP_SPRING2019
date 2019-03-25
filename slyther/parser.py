@@ -208,24 +208,37 @@ def lex(code):
     >>> list(lex("'"))
     [Quote]
     """
-    # return list(generate)
-    #https://effbot.org/zone/xml-scanner.htm
-    #I spent so much on this and found this website is really helpful
-    p = re.compile(r'''(\()|   
-                       (\))|
-                       (\')|
-      ([-+]?[0-9]*\.[0-9]+)|
-         ([-+]?[1-9][0-9]*)|
-                      (\s+)|
-                   (^\#!.*)|
-                     (;.*$)|
-        (\"(\\.|[^"\\])*\")|
-          (^[A-z]+[0-9]*)''' ,re.VERBOSE)
- # 0     1       2       3       4       5       6       7       8       9
- # (     )       '       float   int    space    #!     ;.       string  symbol
+	#("(?:[^"\\]|\\.)*")
+    p = re.compile(r'''
+                	(\()|   
+                	(\))|
+                	(\')|
+                	([-+]?\d+\.\d+)|
+                	([-+]?[1-9][0-9]*)|
+                	(\s+)|
+                	(^\#!.*)|
+                	(^;.*$)|
+                	(\"(?:\\.|[^"\\])*\")|
+                	([^.\s'\"\(\);][^\s'\"\(\);]*)''' ,re.VERBOSE)
+    # 1     2       3       4       5       6        7      8         9       10
+    # (     )       '       float   Int    space    #!     ;.       string  symbol
+    for item in re.finditer(p,code):
+        if item.group(1) is not None:
+            yield LParen("LParen")
+        if item.group(2) is not None:
+            yield RParen("RParen")
+        if item.group(3) is not None:
+            yield Quote("Quote")
 
-
-
+        if item.group(4) is not None:
+            yield float(float(item.group(0)))
+        if item.group(5) is not None:
+            yield int(int(item.group(0)))
+        if item.group(9) is not None:
+            yield String(str(item.group(0)))
+        if item.group(10) is not None:
+            yield Symbol(str(item.group(0)))
+            
 def parse_strlit(tok):
     r"""
     This function is a helper method for ``lex``. It takes a string literal,
