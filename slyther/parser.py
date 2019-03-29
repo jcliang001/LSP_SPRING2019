@@ -215,30 +215,38 @@ def lex(code):
                 	(\')|
                 	([-+]?\d+\.\d+)|
                 	([-+]?[1-9][0-9]*)|
-                	(\s+)|
-                	(^\#!.*)|
-                	(^;.*$)|
-                	(\"(?:\\.|[^"\\])*\")|
-                	([^.\s'\"\(\);][^\s'\"\(\);]*)''' ,re.VERBOSE)
+                	(\s)|
+                	(^#!.*)|
+                	(;.*)|
+                	("(?:[^"\\]|\\.)*")|
+                	([^.\'\s\"\(\);][^\'\s\"\(\);]*)
+                    (.)''' ,re.VERBOSE)
     # 1     2       3       4       5       6        7      8         9       10
     # (     )       '       float   Int    space    #!     ;.       string  symbol
     for item in re.finditer(p,code):
         if item.group(1) is not None:
             yield LParen("LParen")
-        if item.group(2) is not None:
+        elif item.group(2) is not None:
             yield RParen("RParen")
-        if item.group(3) is not None:
+        elif item.group(3) is not None:
             yield Quote("Quote")
-
-        if item.group(4) is not None:
+        elif item.group(6) is not None:
+            pass
+        #elif item.group(7) is not None:
+        #    pass
+        elif item.group(8) is not None:
+            pass
+        elif item.group(4) is not None:
             yield float(float(item.group(0)))
-        if item.group(5) is not None:
+        elif item.group(5) is not None:
             yield int(int(item.group(0)))
-        if item.group(9) is not None:
-            yield String(str(item.group(0)))
-        if item.group(10) is not None:
+        elif item.group(9) is not None:
+            yield parse_strlit(item[0])
+        elif item.group(10) is not None:
             yield Symbol(str(item.group(0)))
-            
+        elif item.group(11) is not None:
+            raise SyntaxError("malformed tokens in input")
+
 def parse_strlit(tok):
     r"""
     This function is a helper method for ``lex``. It takes a string literal,
@@ -304,7 +312,65 @@ def parse_strlit(tok):
     you should not use any of Python's string literal processing
     utilities for this: tl;dr do it yourself.
     """
-    raise NotImplementedError("Deliverable 2")
+    result = ""
+    tok = tok[1:-1] # get rid of the double quote
+    m = re.compile(r'''
+                (\\a)|  #1
+                (\\b)|  #2
+                (\\e)|  #3
+                (\\f)|  #4
+                (\\n)|  #5
+                (\\r)|  #6
+                (\\t)|  #7
+                (\\v)|  #8
+                (\\\")| #9
+                (\\\\)| #10
+                (\\x([0-9a-fA-F][0-9a-fA-F]))| #11, #12
+                (\\0([0-7][0-7]))| #13 #14
+                (\\)| #15
+                (\\0)| #16
+                (.) #17''', re.VERBOSE)
+    
+    for item in m.finditer(tok):
+        if item.group(1):
+            result += "\x07"
+        elif item.group(2):
+            result += "\x08"
+        elif item.group(3):
+            result += "\x1b"
+        elif item.group(4):
+            result += "\x0c"
+        elif item.group(5):
+            result += "\x0a"
+        elif item.group(6):
+            result += "\x0d"
+        elif item.group(7):
+            result += "\x09"
+        elif item.group(8):
+            result += "\x0b"
+        elif item.group(9):
+            result += "\x22"
+        elif item.group(10):
+            result += "\x5c"
+        elif item.group(15):
+            result += "\\"
+        elif item.group(16):
+            result += "\x00"
+        elif item.group(11):
+            reference = int(item.group(12), 16)
+            character = chr(reference)
+            result += character
+        elif item.group(13):
+            reference = int(item.group(14), 8)
+            character = chr(reference)
+            result += character
+        elif item.group(17): #any characters
+            result += item.group(17)
+
+
+    result = String(result) #put the double quotes back into the result.
+    return result
+
 
 
 def parse(tokens):
