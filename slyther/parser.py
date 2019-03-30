@@ -208,44 +208,82 @@ def lex(code):
     >>> list(lex("'"))
     [Quote]
     """
-	#("(?:[^"\\]|\\.)*")
-    p = re.compile(r'''
-                	(\()|   
-                	(\))|
-                	(\')|
-                	([-+]?\d+\.\d+)|
-                	([-+]?[1-9][0-9]*)|
-                	(\s)|
-                	(^#!.*)|
-                	(;.*)|
-                	("(?:[^"\\]|\\.)*")|
-                	([^.\'\s\"\(\);][^\'\s\"\(\);]*)
-                    (.)''' ,re.VERBOSE)
-    # 1     2       3       4       5       6        7      8         9       10
-    # (     )       '       float   Int    space    #!     ;.       string  symbol
-    for item in re.finditer(p,code):
-        if item.group(1) is not None:
-            yield LParen("LParen")
-        elif item.group(2) is not None:
-            yield RParen("RParen")
-        elif item.group(3) is not None:
-            yield Quote("Quote")
-        elif item.group(6) is not None:
-            pass
-        #elif item.group(7) is not None:
-        #    pass
-        elif item.group(8) is not None:
-            pass
-        elif item.group(4) is not None:
-            yield float(float(item.group(0)))
-        elif item.group(5) is not None:
-            yield int(int(item.group(0)))
-        elif item.group(9) is not None:
-            yield parse_strlit(item[0])
-        elif item.group(10) is not None:
-            yield Symbol(str(item.group(0)))
-        elif item.group(11) is not None:
-            raise SyntaxError("malformed tokens in input")
+    regex_array = [re.compile(r'\('), # lparen 0
+                   re.compile(r'\)'), # rparen 1
+                   re.compile(r'\''), # quote 2
+                   re.compile(r'\s+'), # whitespace 3
+                   re.compile(r'"([^"\\]|\\.)*"'), # string 4
+                   re.compile(r'([-+]?[0-9]+[\.][0-9]*) | ([-+]?[0-9]*[\.][0-9]*)'), # float 5
+                   re.compile(r'[-+]?[0-9]+'), # int 6
+                   re.compile(r'^#.*?[$\n]'), # shebang 7
+                   re.compile(r'[^\s\d\.\'"\(\)\;][^\s\'"\(\);]*'), #symbol 8
+                   re.compile(r';.*?$') #comments 9
+    ]
+    position = 0
+    isMatched = False
+    while(position < len(code)):
+        for i in range(0, len(regex_array)):
+            isMatched = False
+            match = regex_array[i].match(code, position)
+            if i == 0:
+                if match is not None:
+                    yield LParen("LParen")
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 1:
+                if match is not None:
+                    yield RParen("RParen")
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 2:
+                if match is not None:
+                    yield Quote("Quote")
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 3:
+                if match is not None:
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 4:
+                if match is not None:
+                    yield String(match.group(0))
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 5:
+                if match is not None:
+                    yield float(match.group(0))
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 6:
+                if match is not None:
+                    yield int(match.group(0))
+                    position = match.end()
+                    isMatched  = True
+                    break
+            if i == 7:
+                if match is not None:
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 8:
+                if match is not None:
+                    yield Symbol(match.group(0))
+                    position = match.end()
+                    isMatched = True
+                    break
+            if i == 9:
+                if match is not None:
+                    position = match.end()
+                    isMatched = True
+                    break
+            if not isMatched:
+                raise SyntaxError("malformed tokens in input")
 
 def parse_strlit(tok):
     r"""
@@ -312,6 +350,7 @@ def parse_strlit(tok):
     you should not use any of Python's string literal processing
     utilities for this: tl;dr do it yourself.
     """
+    
     result = ""
     tok = tok[1:-1] # get rid of the double quote
     m = re.compile(r'''
