@@ -220,70 +220,58 @@ def lex(code):
                    re.compile(r';.*?$') #comments 9
     ]
     position = 0
-    isMatched = False
     while(position < len(code)):
         for i in range(0, len(regex_array)):
-            isMatched = False
             match = regex_array[i].match(code, position)
             if i == 0:
                 if match is not None:
                     yield LParen("LParen")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 1:
                 if match is not None:
                     yield RParen("RParen")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 2:
                 if match is not None:
                     yield Quote("Quote")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 3:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
             if i == 4:
                 if match is not None:
-                    yield String(match.group(0))
+                    yield String(parse_strlit(match.group(0)))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 5:
                 if match is not None:
                     yield float(match.group(0))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 6:
                 if match is not None:
                     yield int(match.group(0))
                     position = match.end()
-                    isMatched  = True
                     break
             if i == 7:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
             if i == 8:
                 if match is not None:
                     yield Symbol(match.group(0))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 9:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
-            if not isMatched:
-                raise SyntaxError("malformed tokens in input")
+                else:
+                    raise SyntaxError("malformed tokens in input")
 
 def parse_strlit(tok):
     r"""
