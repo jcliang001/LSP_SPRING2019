@@ -213,7 +213,7 @@ def lex(code):
                    re.compile(r'\''), # quote 2
                    re.compile(r'\s+'), # whitespace 3
                    re.compile(r'"([^"\\]|\\.)*"'), # string 4
-                   re.compile(r'([-+]?[0-9]+[\.][0-9]*) | ([-+]?[0-9]*[\.][0-9]*)'), # float 5
+                   re.compile(r'(-?\d+\.\d*)|(-?\d*\.\d+)'), # float 5
                    re.compile(r'[-+]?[0-9]+'), # int 6
                    re.compile(r'^#.*?[$\n]'), # shebang 7
                    re.compile(r'[^\s\d\.\'"\(\)\;][^\s\'"\(\);]*'), #symbol 8
@@ -244,7 +244,7 @@ def lex(code):
                     break
             if i == 4:
                 if match is not None:
-                    yield String(parse_strlit(match.group(0)))
+                    yield parse_strlit(match.group(0))
                     position = match.end()
                     break
             if i == 5:
