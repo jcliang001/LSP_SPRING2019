@@ -354,8 +354,8 @@ def parse_strlit(tok):
                 (\\\\)| #10
                 (\\x([0-9a-fA-F][0-9a-fA-F]))| #11, #12
                 (\\0([0-7][0-7]))| #13 #14
-                (\\)| #15
-                (\\0)| #16
+                (\\0)| #15
+                (\\)| #16
                 (.) #17''', re.VERBOSE)
     
     for item in m.finditer(tok):
@@ -379,9 +379,9 @@ def parse_strlit(tok):
             result += "\x22"
         elif item.group(10):
             result += "\x5c"
-        elif item.group(15):
-            result += "\\"
         elif item.group(16):
+            result += "\\"
+        elif item.group(15):
             result += "\x00"
         elif item.group(11):
             reference = int(item.group(12), 16)
