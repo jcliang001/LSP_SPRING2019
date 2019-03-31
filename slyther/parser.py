@@ -528,8 +528,49 @@ def parse(tokens):
         ...
     SyntaxError: invalid quotation
     """
-    raise NotImplementedError("Deliverable 2")
+    s = []
 
+    for x in tokens:
+        if not isinstance(x, RParen):
+            s.append(x)
+        else:
+            body = NIL
+            while True:
+                if len(s) > 0:
+                    last = s[-1]
+                    del s[-1]
+                else:
+                    raise SyntaxError("too many closing parens")
+                if isinstance(last, LParen):
+                    s.append(body)
+                    break
+                elif isinstance(last, Quote):
+                    raise SyntaxError("invalid quotation")
+                else:
+                    body = SExpression(last, body)
+            if len(s) > 1:
+                while isinstance(s[len(s) - 2], Quote):
+                    if len(s) < 2:
+                        break
+                    item = s[-1]
+                    del s[-1]
+                    del s[-1]
+                    s.append(Quoted(item))
+            if len(s) == 1:
+                yield s.pop()
+        if not isinstance(x, ControlToken):
+            if len(s) > 1:
+                while isinstance(s[len(s) - 2], Quote):
+                    if len(s) < 2:
+                        break
+                    item = s[-1]
+                    del s[-1]
+                    del s[-1]
+                    s.append(Quoted(item))
+            if len(s) == 1:
+                yield s.pop()
+    if len(s) != 0:
+        raise SyntaxError("incomplete parse")
 
 def lisp(code: str):
     """
