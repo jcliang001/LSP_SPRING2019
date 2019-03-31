@@ -217,7 +217,7 @@ def lex(code):
                    re.compile(r'[-+]?[0-9]+'), # int 6
                    re.compile(r'^#.*?[$\n]'), # shebang 7
                    re.compile(r'[^\s\d\.\'"\(\)\;][^\s\'"\(\);]*'), #symbol 8
-                   re.compile(r';.*?$') #comments 9
+                   re.compile(r';.*$', re.MULTILINE) #comments 9
     ]
     position = 0
     while(position < len(code)):
