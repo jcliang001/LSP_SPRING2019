@@ -220,70 +220,58 @@ def lex(code):
                    re.compile(r';.*?$') #comments 9
     ]
     position = 0
-    isMatched = False
     while(position < len(code)):
         for i in range(0, len(regex_array)):
-            isMatched = False
             match = regex_array[i].match(code, position)
             if i == 0:
                 if match is not None:
                     yield LParen("LParen")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 1:
                 if match is not None:
                     yield RParen("RParen")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 2:
                 if match is not None:
                     yield Quote("Quote")
                     position = match.end()
-                    isMatched = True
                     break
             if i == 3:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
             if i == 4:
                 if match is not None:
-                    yield String(match.group(0))
+                    yield String(parse_strlit(match.group(0)))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 5:
                 if match is not None:
                     yield float(match.group(0))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 6:
                 if match is not None:
                     yield int(match.group(0))
                     position = match.end()
-                    isMatched  = True
                     break
             if i == 7:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
             if i == 8:
                 if match is not None:
                     yield Symbol(match.group(0))
                     position = match.end()
-                    isMatched = True
                     break
             if i == 9:
                 if match is not None:
                     position = match.end()
-                    isMatched = True
                     break
-            if not isMatched:
-                raise SyntaxError("malformed tokens in input")
+                else:
+                    raise SyntaxError("malformed tokens in input")
 
 def parse_strlit(tok):
     r"""
@@ -528,49 +516,27 @@ def parse(tokens):
         ...
     SyntaxError: invalid quotation
     """
-    s = []
 
-    for x in tokens:
-        if not isinstance(x, RParen):
-            s.append(x)
-        else:
-            body = NIL
-            while True:
-                if len(s) > 0:
-                    last = s[-1]
-                    del s[-1]
-                else:
-                    raise SyntaxError("too many closing parens")
-                if isinstance(last, LParen):
-                    s.append(body)
-                    break
-                elif isinstance(last, Quote):
-                    raise SyntaxError("invalid quotation")
-                else:
-                    body = SExpression(last, body)
-            if len(s) > 1:
-                while isinstance(s[len(s) - 2], Quote):
-                    if len(s) < 2:
-                        break
-                    item = s[-1]
-                    del s[-1]
-                    del s[-1]
-                    s.append(Quoted(item))
-            if len(s) == 1:
-                yield s.pop()
-        if not isinstance(x, ControlToken):
-            if len(s) > 1:
-                while isinstance(s[len(s) - 2], Quote):
-                    if len(s) < 2:
-                        break
-                    item = s[-1]
-                    del s[-1]
-                    del s[-1]
-                    s.append(Quoted(item))
-            if len(s) == 1:
-                yield s.pop()
-    if len(s) != 0:
+    result = []
+    lp = LParen()
+    rp = RParen()
+    q = Quote()
+    while tokens is not NIL:
+        if tokens is lp:
+            result.append(lp)
+        if tokens is q:
+            if next(tokens) is rp: # no quotes before rp
+                raise SyntaxError("invalid quotation")
+        if tokens is rp:
+            result.append(rp)
+        tokens = next(tokens)
+    if result.count(lp) < result.count(rp): # too many rp
+        result = [NIL]
+        raise SyntaxError("too many closing parens")
+    if result[len(result)-1] != rp: # everything should end in rp
         raise SyntaxError("incomplete parse")
+    return iter(result)
+
 
 def lisp(code: str):
     """
