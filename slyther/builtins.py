@@ -83,9 +83,9 @@ def div(*args):
     0.5
     """
     if len(args) == 1:
-        return 1/args[0]
+        return operator.truediv(1, args[0])
     if len(args) > 1:
-        return reduce(lambda x,y: x/y, args)
+        return reduce(lambda x,y: operator.truediv(x,y), args)
     else:
         return 0
 
@@ -103,7 +103,12 @@ def floordiv(*args):
     >>> floordiv(2)
     0
     """
-    raise NotImplementedError("Deliverable 3")
+    if len(args) == 1:
+        return operator.floordiv(1, args[0])
+    if len(args) > 1:
+        return reduce(lambda x,y: operator.floordiv(x, y), args)
+    else:
+        return 0
 
 
 # IO
@@ -127,8 +132,7 @@ def list_(*args) -> ConsList:
     >>> list_()
     NIL
     """
-    raise NotImplementedError("Deliverable 3")
-
+    return ConsList.from_iterable(args)
 
 # Comparators
 lt = BuiltinFunction(operator.lt, '<')
@@ -159,24 +163,21 @@ def car(cell: ConsCell):
     """
     Get the ``car`` of a cons cell.
     """
-    raise NotImplementedError("Deliverable 3")
-
+    return cell.car
 
 @BuiltinFunction
 def cdr(cell: ConsCell):
     """
     Get the ``cdr`` of a cons cell.
     """
-    raise NotImplementedError("Deliverable 3")
-
+    return cell.cdr
 
 @BuiltinFunction('nil?')
 def is_nil(cell: ConsCell) -> bool:
     """
     Return ``True`` if the cell is ``NIL``, ``False`` otherwise.
     """
-    raise NotImplementedError("Deliverable 3")
-
+    return cell.car == NIL
 
 @BuiltinMacro
 def define(se: SExpression, stg: LexicalVarStorage):
