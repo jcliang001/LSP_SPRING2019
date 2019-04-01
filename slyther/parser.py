@@ -208,17 +208,19 @@ def lex(code):
     >>> list(lex("'"))
     [Quote]
     """
-    regex_array = [re.compile(r'\('), # lparen 0
-                   re.compile(r'\)'), # rparen 1
-                   re.compile(r'\''), # quote 2
-                   re.compile(r'\s+'), # whitespace 3
-                   re.compile(r'"([^"\\]|\\.)*"'), # string 4
-                   re.compile(r'(-?\d+\.\d*)|(-?\d*\.\d+)'), # float 5
-                   re.compile(r'[-+]?[0-9]+'), # int 6
-                   re.compile(r'^#.*?[$\n]'), # shebang 7
-                   re.compile(r'[^\s\d\.\'"\(\)\;][^\s\'"\(\);]*'), #symbol 8
-                   re.compile(r';.*$', re.MULTILINE) #comments 9
+    regex_array = [
+        re.compile(r'\('),  # lparen 0
+        re.compile(r'\)'),  # rparen 1
+        re.compile(r'\''),  # quote 2
+        re.compile(r'\s+'),  # whitespace 3
+        re.compile(r'"([^"\\]|\\.)*"'),  # string 4
+        re.compile(r'(-?\d+\.\d*)|(-?\d*\.\d+)'),  # float 5
+        re.compile(r'[-+]?[0-9]+'),  # int 6
+        re.compile(r'^#.*?[$\n]'),  # shebang 7
+        re.compile(r'[^\s\d\.\'"\(\)\;][^\s\'"\(\);]*'),  # symbol 8
+        re.compile(r';.*$', re.MULTILINE)  # comments 9
     ]
+
     position = 0
     while(position < len(code)):
         for i in range(0, len(regex_array)):
@@ -272,6 +274,7 @@ def lex(code):
                     break
                 else:
                     raise SyntaxError("malformed tokens in input")
+
 
 def parse_strlit(tok):
     r"""
@@ -338,9 +341,8 @@ def parse_strlit(tok):
     you should not use any of Python's string literal processing
     utilities for this: tl;dr do it yourself.
     """
-    
     result = ""
-    tok = tok[1:-1] # get rid of the double quote
+    tok = tok[1:-1]  # get rid of the double quote
     m = re.compile(r'''
                 (\\a)|  #1
                 (\\b)|  #2
@@ -357,7 +359,7 @@ def parse_strlit(tok):
                 (\\0)| #15
                 (\\)| #16
                 (.) #17''', re.VERBOSE)
-    
+
     for item in m.finditer(tok):
         if item.group(1):
             result += "\x07"
@@ -391,13 +393,11 @@ def parse_strlit(tok):
             reference = int(item.group(14), 8)
             character = chr(reference)
             result += character
-        elif item.group(17): #any characters
+        elif item.group(17):  # any characters
             result += item.group(17)
 
-
-    result = String(result) #put the double quotes back into the result.
+    result = String(result)  # put the double quotes back into the result.
     return result
-
 
 
 def parse(tokens):
@@ -516,40 +516,50 @@ def parse(tokens):
         ...
     SyntaxError: invalid quotation
     """
-    
-
     result = []
-    
+
     for item in tokens:
         if not isinstance(item, RParen):
-            result.append(item) #adding elements in the result list except closed paren
-        else:#if item is rp, then we start to process the elements 
+            # Adding elements in the result list except closed paren
+            result.append(item)
+        else:  # if item is rp, then we start to process the elements
             cdr = NIL
-            while True: # process the content in ()
+            while True:  # process the content in ()
                 if len(result) > 0:
-                    last_item = result[-1] # get the last item in the list
+                    last_item = result[-1]  # get the last item in the list
                     del result[-1]
                 else:
-                    raise SyntaxError("too many closing parens") #detect the extra right paren
-                if isinstance(last_item, LParen): #wrap up the content between open paren and closed paren
+                    # Detect the extra right paren
+                    raise SyntaxError("too many closing parens")
+                # Wrap up the content between open paren and closed paren
+                if isinstance(last_item, LParen):
                     result.append(cdr)
                     break
                 elif isinstance(last_item, Quote):
-                    raise SyntaxError("invalid quotation") #quote can't be followed by right Paren
-                else: 
-                    cdr = SExpression(last_item, cdr) #if the last item in the result list is not controlToken, then set them into from_iterable expression
-            if len(result) > 1: # if we still have unprocessed symbol with quote inside a parenthesis, eg: ( 'define ([processed part]__
-                while isinstance(result[len(result) - 2], Quote): #get the quote in a result list.
-                    if len(result) < 2: # cases that exit the loop.
-                        break;
+                    # Quote can't be followed by right Paren
+                    raise SyntaxError("invalid quotation")
+                else:
+                    # If the last item in the result list is not controlToken
+                    # then set them into from_iterable expression
+                    cdr = SExpression(last_item, cdr)
+            # If we still have unprocessed symbol with quote inside a
+            # parenthesis eg: ( 'define ([processed part]
+            if len(result) > 1:
+                # Get the quote in a result list
+                while isinstance(result[len(result) - 2], Quote):
+                    if len(result) < 2:  # cases that exit the loop.
+                        break
                     last_item = result[-1]
                     del result[-1]
-                    del result[-1] #delete the quote from the result list
-                    result.append(Quoted(last_item)) 
+                    # Delete the quote from the result list
+                    del result[-1]
+                    result.append(Quoted(last_item))
             if len(result) == 1:
-                yield result.pop() # ususally this will yield the left paren
-    #when the Quote shows up outside the first paren, we need to process this first.
-        if not isinstance(item, ControlToken): #after process the content inside ()
+                yield result.pop()  # usually this will yield the left paren
+        # When the Quote shows up outside the first paren,
+        # we need to process this first.
+        # After process the content inside ()
+        if not isinstance(item, ControlToken):
             if len(result) > 1:
                 while isinstance(result[len(result) - 2], Quote):
                     if len(result) < 2:
@@ -559,9 +569,10 @@ def parse(tokens):
                     del result[-1]
                     result.append(Quoted(last_item))
             if len(result) == 1:
-            	yield result.pop()
-    if len(result) != 0: 
+                yield result.pop()
+    if len(result) != 0:
         raise SyntaxError("incomplete parse")
+
 
 def lisp(code: str):
     """
