@@ -1,5 +1,3 @@
-from slyther.interpreter import exec
-
 def repl(interpreter, debug=False):
     """
     Take an interpreter object (see ``slyther/interpreter.py``) and give a REPL
@@ -33,13 +31,19 @@ def repl(interpreter, debug=False):
     or pudb.
     
     """
+    
     while True:
-        expr = input(">")
-        if expr == "^D":
+        try:
+            interpreter = input(">")
+            exec(interpreter)  # This isn't working
+        except KeyboardInterrupt:  # captures ^C
+            print()
+            continue
+        except EOFError:  # captures ^D
             exit(0)
-        if expr == "^C":
-            print("<-- ^C resulted in new prompt line")
-            exit(0)
-        else:
-            exec(expr)
+        
+        
+
+
+    
 
