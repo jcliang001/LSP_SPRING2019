@@ -29,21 +29,13 @@ def repl(interpreter, debug=False):
     If you do this, you should probably disable this behavior when ``debug``
     is set to ``True``, as it allows for easy post-mortem debugging with pdb
     or pudb.
-    
     """
-    
     while True:
         try:
             expr = input(">")
-            print(interpreter.exec(expr))  # This isn't working
-        except KeyboardInterrupt:  # captures ^C
+            print(interpreter.exec(expr))
+        except KeyboardInterrupt:
             print()
             continue
-        except EOFError:  # captures ^D
+        except EOFError:
             exit(0)
-        
-        
-
-
-    
-

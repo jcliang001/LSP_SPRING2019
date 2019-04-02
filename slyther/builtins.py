@@ -24,6 +24,7 @@ def add(*args):
     """
     return sum(args)
 
+
 @BuiltinFunction('-')
 def sub(*args):
     """
@@ -44,11 +45,12 @@ def sub(*args):
         Use ``reduce``.
     """
     if len(args) == 1:
-        return -1*args[0]
+        return -1 * args[0]
     if len(args) > 1:
-        return reduce(lambda x,y: x-y, args)
+        return reduce(lambda x, y: x - y, args)
     else:
         return 0
+
 
 @BuiltinFunction('*')
 def mul(*args):
@@ -69,6 +71,7 @@ def mul(*args):
         product *= i
     return product
 
+
 @BuiltinFunction('/')
 def div(*args):
     """
@@ -85,9 +88,10 @@ def div(*args):
     if len(args) == 1:
         return operator.truediv(1, args[0])
     if len(args) > 1:
-        return reduce(lambda x,y: operator.truediv(x,y), args)
+        return reduce(lambda x, y: operator.truediv(x, y), args)
     else:
         return 0
+
 
 @BuiltinFunction
 def floordiv(*args):
@@ -106,7 +110,7 @@ def floordiv(*args):
     if len(args) == 1:
         return operator.floordiv(1, args[0])
     if len(args) > 1:
-        return reduce(lambda x,y: operator.floordiv(x, y), args)
+        return reduce(lambda x, y: operator.floordiv(x, y), args)
     else:
         return 0
 
@@ -133,6 +137,7 @@ def list_(*args) -> ConsList:
     NIL
     """
     return ConsList.from_iterable(args)
+
 
 # Comparators
 lt = BuiltinFunction(operator.lt, '<')
@@ -165,6 +170,7 @@ def car(cell: ConsCell):
     """
     return cell.car
 
+
 @BuiltinFunction
 def cdr(cell: ConsCell):
     """
@@ -172,12 +178,14 @@ def cdr(cell: ConsCell):
     """
     return cell.cdr
 
+
 @BuiltinFunction('nil?')
 def is_nil(cell: ConsCell) -> bool:
     """
     Return ``True`` if the cell is ``NIL``, ``False`` otherwise.
     """
     return cell.car == NIL
+
 
 @BuiltinMacro
 def define(se: SExpression, stg: LexicalVarStorage):

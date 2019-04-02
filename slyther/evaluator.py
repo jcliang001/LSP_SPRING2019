@@ -133,19 +133,19 @@ def lisp_eval(expr, stg: LexicalVarStorage):
     """
     while True:
         if expr is NIL:
-            return NIL # if the expr is NIL then return NIL.
-        elif isinstance(expr, Quoted): # if the expr with quote
-            y = expr.elem #access the content after the quote
-            if isinstance(y, SExpression):#if the quote followed by SE, then we need to traverse each element and 
+            return NIL  # if the expr is NIL then return NIL.
+        elif isinstance(expr, Quoted):  # if the expr with quote
+            y = expr.elem  # access the content after the quote
+            if isinstance(y, SExpression):
                 a = []
                 for x in y:
                     a.append(lisp_eval(Quoted(x), stg))
-                return ConsList.from_iterable(a) #return '(a,b,c)
+                return ConsList.from_iterable(a)   # return '(a,b,c)
             else:
                 return y
-        elif isinstance(expr, Symbol):# return the value corresponding to the key
+        elif isinstance(expr, Symbol):
             return (stg[expr].value)
-        elif isinstance(expr, SExpression): # if this is SE,we need to divide two cases. 
+        elif isinstance(expr, SExpression):
             s = lisp_eval(expr.car, stg)
             if isinstance(s, Macro):
                 a = []

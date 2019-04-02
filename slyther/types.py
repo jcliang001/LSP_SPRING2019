@@ -628,13 +628,9 @@ class UserFunction(Function):
         """
         # avoid circular imports
         from slyther.evaluator import lisp_eval
-        #redefine the class variable.
-
-        #create a lexicalStorage:
         storage = LexicalVarStorage(self.environ)
-        
         for x, y in zip(args, self.params):
-            storage.put(y,x)
+            storage.put(y, x)
         r = NIL
         length = len(self.body)
         for index, z in enumerate(self.body):
@@ -643,7 +639,6 @@ class UserFunction(Function):
             else:
                 r = lisp_eval(z, storage)
         return r
-
 
     def __repr__(self):
         """
