@@ -1,3 +1,5 @@
+from slyther.interpreter import exec
+
 def repl(interpreter, debug=False):
     """
     Take an interpreter object (see ``slyther/interpreter.py``) and give a REPL
@@ -31,4 +33,13 @@ def repl(interpreter, debug=False):
     or pudb.
     
     """
-    raise NotImplementedError("Deliverable 3")
+    while True:
+        expr = input(">")
+        if expr == "^D":
+            exit(0)
+        if expr == "^C":
+            print("<-- ^C resulted in new prompt line")
+            exit(0)
+        else:
+            exec(expr)
+
