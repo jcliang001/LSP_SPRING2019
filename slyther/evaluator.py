@@ -1,5 +1,5 @@
 from slyther.types import (Quoted, NIL, SExpression, ConsList, Symbol,
-                           Macro, NilType, LexicalVarStorage)
+                           Macro, NilType, LexicalVarStorage, Function)
 
 
 def lisp_eval(expr, stg: LexicalVarStorage):
@@ -131,4 +131,38 @@ def lisp_eval(expr, stg: LexicalVarStorage):
     3
 
     """
-    raise NotImplementedError("Deliverable 3")
+    while True:
+        if expr is NIL:
+            return NIL # if the expr is NIL then return NIL.
+        elif isinstance(expr, Quoted): # if the expr with quote
+            y = expr.elem #access the content after the quote
+            if isinstance(y, SExpression):#if the quote followed by SE, then we need to traverse each element and 
+                a = []
+                for x in y:
+                    a.append(lisp_eval(Quoted(x), stg))
+                return ConsList.from_iterable(a) #return '(a,b,c)
+            else:
+                return y
+        elif isinstance(expr, Symbol):# return the value corresponding to the key
+            return (stg[expr].value)
+        elif isinstance(expr, SExpression): # if this is SE,we need to divide two cases. 
+            s = lisp_eval(expr.car, stg)
+            if isinstance(s, Macro):
+                a = []
+                for x in expr.cdr:
+                    a.append(x)
+                expr = s(expr.cdr, stg)
+            elif isinstance(s, Function):
+                a = []
+                for x in expr.cdr:
+                    a.append(lisp_eval(x, stg))
+                tup_holder = s(*a)
+                if isinstance(tup_holder, tuple):
+                    expr = tup_holder[0]
+                    stg = tup_holder[1]
+                else:
+                    return tup_holder
+            else:
+                raise TypeError("'Symbol' object is not callable")
+        else:
+            return expr
