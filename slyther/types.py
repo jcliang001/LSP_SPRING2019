@@ -609,7 +609,9 @@ class UserFunction(Function):
         >>> f.environ
         {}
         """
-        raise NotImplementedError("Deliverable 3")
+        self.params = params
+        self.body = body
+        self.environ = environ
 
     def __call__(self, *args):
         """
