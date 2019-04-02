@@ -34,8 +34,8 @@ def repl(interpreter, debug=False):
     
     while True:
         try:
-            interpreter = input(">")
-            exec(interpreter)  # This isn't working
+            expr = input(">")
+            print(interpreter.exec(expr))  # This isn't working
         except KeyboardInterrupt:  # captures ^C
             print()
             continue
