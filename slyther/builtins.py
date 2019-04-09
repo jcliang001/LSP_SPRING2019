@@ -234,8 +234,12 @@ def define(se: SExpression, stg: LexicalVarStorage):
         ...
     KeyError: 'x'
     """
-    raise NotImplementedError("Deliverable 4")
-
+    while se.cdr is not NIL:
+        if isinstance(se.cdr, Variable):
+            stg.put(se.car, se.cdr)
+        if isinstance(se.cdr, SExpression):
+            stg.put(se.car, se.cdr)
+        se = se.cdr
 
 @BuiltinMacro('lambda')
 def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
@@ -414,7 +418,6 @@ def and_(se: SExpression, stg: LexicalVarStorage):
     """
     raise NotImplementedError("Deliverable 4")
 
-
 @BuiltinMacro('or')
 def or_(se: SExpression, stg: LexicalVarStorage):
     """
@@ -538,4 +541,4 @@ def parse_string(code: String):
     Note that the ``BuiltinFunction`` decorator takes care of downgrading an
     ``SExpression`` to a ``ConsList`` for you.
     """
-    raise NotImplementedError("Deliverable 4")
+    return next(parse(lex(code)))
