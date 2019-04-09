@@ -2,7 +2,7 @@ import operator
 from functools import reduce
 from slyther.types import (BuiltinFunction, BuiltinMacro, Symbol,
                            UserFunction, SExpression, cons, String,
-                           ConsList, NIL, LexicalVarStorage, ConsCell)
+                           Variable, ConsList, NIL, LexicalVarStorage, ConsCell)
 from slyther.evaluator import lisp_eval
 from slyther.parser import lex, parse
 from math import floor, ceil, sqrt
@@ -216,7 +216,7 @@ def define(se: SExpression, stg: LexicalVarStorage):
     >>> body = lisp('((print alpha) (print beta))')
     >>> stg = LexicalVarStorage({})
     >>> stg.put('NIL', NIL)
-    >>> stg.put('define', define) # so that you can return a define if you want
+    >>> stg.put('define', define) 
     >>> stg.put('lambda', lambda_func)
     >>> from slyther.evaluator import lisp_eval
     >>> lisp_eval(define(cons(cons(name, args), body), stg), stg)
@@ -234,14 +234,19 @@ def define(se: SExpression, stg: LexicalVarStorage):
         ...
     KeyError: 'x'
     """
-    while se is not NIL:
-        if isinstance(se.cdr, Symbol):
-            stg.put(se.car, se.cdr)
-        if isinstance(se.cdr, SExpression):
-            stg.put(se.car, se.cdr)
-        if isinstance(se.cdr, UserFunction):
-            stg.put(se.car, se.cdr)
-        se = se.cdr
+    key = se.car
+    value = se.cdr
+
+    if isinstance(key, SExpression):
+        function = UserFunction(params=key.cdr, body=value, environ=stg.fork())
+        key = key.car
+        function.environ[key] = Variable(function)
+        stg.put(key,function)
+    elif isinstance(key, Symbol):
+        stg.put(key, lisp_eval(value.car, stg))
+    else:
+        stg.put(key, value)
+
 
 @BuiltinMacro('lambda')
 def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
@@ -335,15 +340,10 @@ def if_expr(se: SExpression, stg: LexicalVarStorage):
     >>> if_expr(se, stg)
     (print "x is greater than or equal to 10")
     """
-<<<<<<< HEAD
-    
-    
-=======
     if lisp_eval(se.car, stg):
         return se.cdr.car
     else:
         return se.cdr.cdr.car
->>>>>>> a9321ee637fed6ce879d124a3deae779d24711b4
 
 @BuiltinMacro('cond')
 def cond(se: SExpression, stg: LexicalVarStorage):
