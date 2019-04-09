@@ -234,11 +234,11 @@ def define(se: SExpression, stg: LexicalVarStorage):
         ...
     KeyError: 'x'
     """
-    while se.cdr is not NIL:
-        if isinstance(se.cdr, Variable):
-            stg.put(se.car, se.cdr)
+    while se is not NIL:
+        if isinstance(se.cdr, Symbol):
+            stg.put(str(se.car), se.cdr)
         if isinstance(se.cdr, SExpression):
-            stg.put(se.car, se.cdr)
+            stg.put(str(se.car), se.cdr)
         se = se.cdr
 
 @BuiltinMacro('lambda')
@@ -262,8 +262,7 @@ def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
     >>> f.environ['x'].value
     20
     """
-    raise NotImplementedError("Deliverable 4")
-
+    return UserFunction(se.car, se.cdr, stg)
 
 @BuiltinMacro('let')
 def let(se: SExpression, stg: LexicalVarStorage) -> SExpression:
