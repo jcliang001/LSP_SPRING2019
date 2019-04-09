@@ -234,10 +234,12 @@ def define(se: SExpression, stg: LexicalVarStorage):
         ...
     KeyError: 'x'
     """
-    while se.cdr is not NIL:
-        if isinstance(se.cdr, Variable):
+    while se is not NIL:
+        if isinstance(se.cdr, Symbol):
             stg.put(se.car, se.cdr)
         if isinstance(se.cdr, SExpression):
+            stg.put(se.car, se.cdr)
+        if isinstance(se.cdr, UserFunction):
             stg.put(se.car, se.cdr)
         se = se.cdr
 
@@ -262,8 +264,7 @@ def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
     >>> f.environ['x'].value
     20
     """
-    raise NotImplementedError("Deliverable 4")
-
+    return UserFunction(se.car, se.cdr, stg)
 
 @BuiltinMacro('let')
 def let(se: SExpression, stg: LexicalVarStorage) -> SExpression:
@@ -334,8 +335,15 @@ def if_expr(se: SExpression, stg: LexicalVarStorage):
     >>> if_expr(se, stg)
     (print "x is greater than or equal to 10")
     """
+<<<<<<< HEAD
     
     
+=======
+    if lisp_eval(se.car, stg):
+        return se.cdr.car
+    else:
+        return se.cdr.cdr.car
+>>>>>>> a9321ee637fed6ce879d124a3deae779d24711b4
 
 @BuiltinMacro('cond')
 def cond(se: SExpression, stg: LexicalVarStorage):
@@ -373,8 +381,10 @@ def cond(se: SExpression, stg: LexicalVarStorage):
     >>> test_cond(15)
     (print "x >= 15")
     """
-    raise NotImplementedError("Deliverable 4")
-
+    while se is not NIL:
+        if(lisp_eval(se.car.car, stg)):
+            return se.car.cdr.car
+        se = se.cdr
 
 @BuiltinMacro('and')
 def and_(se: SExpression, stg: LexicalVarStorage):
@@ -416,7 +426,13 @@ def and_(se: SExpression, stg: LexicalVarStorage):
     >>> lisp_eval(lisp('(and)'), stg)
     NIL
     """
-    raise NotImplementedError("Deliverable 4")
+    result = lisp_eval(se.car, stg)
+    se = se.cdr
+    while se is not NIL:
+        result = result and lisp_eval(se.car, stg)
+        se = se.cdr
+    return result
+
 
 @BuiltinMacro('or')
 def or_(se: SExpression, stg: LexicalVarStorage):
@@ -449,7 +465,12 @@ def or_(se: SExpression, stg: LexicalVarStorage):
     >>> lisp_eval(lisp('(or)'), stg)
     NIL
     """
-    raise NotImplementedError("Deliverable 4")
+    result = lisp_eval(se.car, stg)
+    se = se.cdr
+    while se is not NIL:
+        result = result or lisp_eval(se.car, stg)
+        se = se.cdr
+    return result
 
 
 @BuiltinMacro('set!')
@@ -482,7 +503,11 @@ def setbang(se: SExpression, stg: LexicalVarStorage):
         ...
     KeyError: 'Undefined variable baz'
     """
-    raise NotImplementedError("Deliverable 4")
+    try:
+        stg[se.car].set(lisp_eval(se.cdr.car, stg))
+        return NIL
+    except:
+        raise KeyError("Undefined variable {}".format(str(se.car)))
 
 
 @BuiltinMacro('eval')
