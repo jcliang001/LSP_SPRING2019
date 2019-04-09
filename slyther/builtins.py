@@ -2,7 +2,8 @@ import operator
 from functools import reduce
 from slyther.types import (BuiltinFunction, BuiltinMacro, Symbol,
                            UserFunction, SExpression, cons, String,
-                           Variable, ConsList, NIL, LexicalVarStorage, ConsCell)
+                           Variable, ConsList, NIL, LexicalVarStorage,
+                           ConsCell)
 from slyther.evaluator import lisp_eval
 from slyther.parser import lex, parse
 from math import floor, ceil, sqrt
@@ -216,7 +217,7 @@ def define(se: SExpression, stg: LexicalVarStorage):
     >>> body = lisp('((print alpha) (print beta))')
     >>> stg = LexicalVarStorage({})
     >>> stg.put('NIL', NIL)
-    >>> stg.put('define', define) 
+    >>> stg.put('define', define)
     >>> stg.put('lambda', lambda_func)
     >>> from slyther.evaluator import lisp_eval
     >>> lisp_eval(define(cons(cons(name, args), body), stg), stg)
@@ -241,7 +242,7 @@ def define(se: SExpression, stg: LexicalVarStorage):
         function = UserFunction(params=key.cdr, body=value, environ=stg.fork())
         key = key.car
         function.environ[key] = Variable(function)
-        stg.put(key,function)
+        stg.put(key, function)
     elif isinstance(key, Symbol):
         stg.put(key, lisp_eval(value.car, stg))
     else:
@@ -270,6 +271,7 @@ def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
     20
     """
     return UserFunction(se.car, se.cdr, stg)
+
 
 @BuiltinMacro('let')
 def let(se: SExpression, stg: LexicalVarStorage) -> SExpression:
@@ -309,7 +311,19 @@ def let(se: SExpression, stg: LexicalVarStorage) -> SExpression:
     >>> lisp_eval(Symbol('x'), stg)
     10
     """
-    raise NotImplementedError("Deliverable 4")
+    vals = []
+    ptrs = []
+    pred = se.car
+    con = se.cdr
+    for item in pred:
+        vals.append(item.car)
+        ptrs.append(item.cdr.car)
+    param = SExpression.from_iterable(vals)
+    ptrs = SExpression.from_iterable(ptrs)
+    function = UserFunction(params=param, body=con, environ=stg.fork())
+    res = SExpression(function, ptrs)
+
+    return res
 
 
 @BuiltinMacro('if')
@@ -344,6 +358,7 @@ def if_expr(se: SExpression, stg: LexicalVarStorage):
         return se.cdr.car
     else:
         return se.cdr.cdr.car
+
 
 @BuiltinMacro('cond')
 def cond(se: SExpression, stg: LexicalVarStorage):
@@ -385,6 +400,7 @@ def cond(se: SExpression, stg: LexicalVarStorage):
         if(lisp_eval(se.car.car, stg)):
             return se.car.cdr.car
         se = se.cdr
+
 
 @BuiltinMacro('and')
 def and_(se: SExpression, stg: LexicalVarStorage):
@@ -549,8 +565,12 @@ def eval_(se: SExpression, stg: LexicalVarStorage):
     0
     NIL
     """
-    raise NotImplementedError("Deliverable 4")
+    expression = lisp_eval(se.car, stg)
+    if isinstance(expression, ConsList):
+        expression = SExpression.from_iterable(
+                        eval_(SExpression(x), stg) for x in expression)
 
+    return expression
 
 @BuiltinFunction('parse')
 def parse_string(code: String):
