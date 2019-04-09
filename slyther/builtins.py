@@ -334,8 +334,8 @@ def if_expr(se: SExpression, stg: LexicalVarStorage):
     >>> if_expr(se, stg)
     (print "x is greater than or equal to 10")
     """
-    raise NotImplementedError("Deliverable 4")
-
+    
+    
 
 @BuiltinMacro('cond')
 def cond(se: SExpression, stg: LexicalVarStorage):
