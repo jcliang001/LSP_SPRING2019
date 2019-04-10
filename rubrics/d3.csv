@@ -1,0 +1,17 @@
+tests/d3/test__docstring_slyther.builtins.add.txt::test__docstring_slyther.builtins.add.txt,1
+tests/d3/test__docstring_slyther.builtins.car.txt::test__docstring_slyther.builtins.car.txt,0.5
+tests/d3/test__docstring_slyther.builtins.cdr.txt::test__docstring_slyther.builtins.cdr.txt,0.5
+tests/d3/test__docstring_slyther.builtins.div.txt::test__docstring_slyther.builtins.div.txt,0.5
+tests/d3/test__docstring_slyther.builtins.floordiv.txt::test__docstring_slyther.builtins.floordiv.txt,0.5
+tests/d3/test__docstring_slyther.builtins.list_.txt::test__docstring_slyther.builtins.list_.txt,1
+tests/d3/test__docstring_slyther.builtins.mul.txt::test__docstring_slyther.builtins.mul.txt,1
+tests/d3/test__docstring_slyther.builtins.sub.txt::test__docstring_slyther.builtins.sub.txt,1
+tests/d3/test__docstring_slyther.evaluator.lisp_eval.txt::test__docstring_slyther.evaluator.lisp_eval.txt,3
+tests/d3/test__docstring_slyther.types.UserFunction.__call__.txt::test__docstring_slyther.types.UserFunction.__call__.txt,3
+tests/d3/test__docstring_slyther.types.UserFunction.__init__.txt::test__docstring_slyther.types.UserFunction.__init__.txt,0.5
+tests/d3/test__docstring_slyther.types.UserFunction.__repr__.txt::test__docstring_slyther.types.UserFunction.__repr__.txt,0.5
+tests/d3/test__docstring_slyther.types.UserFunction.txt::test__docstring_slyther.types.UserFunction.txt,0
+tests/d3/test_user_function.py::test_function_args,2
+tests/d3/test_user_function.py::test_function_return,2
+Style Guide,5
+TOTAL,22
