@@ -1,3 +1,0 @@
-[console_scripts]
-slyther = slyther.__main__:main
-

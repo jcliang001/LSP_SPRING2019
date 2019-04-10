@@ -35,7 +35,7 @@ def repl(interpreter, debug=False):
             expr = input(">")
             print(interpreter.exec(expr))
         except KeyboardInterrupt:
-            print()
+            print("")
             continue
         except EOFError:
             exit(0)

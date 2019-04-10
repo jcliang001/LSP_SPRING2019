@@ -1,3 +1,5 @@
+.. image:: slytherlisp.png
+
 SlytherLisp
 ===========
 
@@ -8,9 +10,9 @@ SlytherLisp
 .. Replace with your own names and Mines email addresses.
 
 :Implemented By:
-   * Teresa Nguyen <teresamysinhnguyen@mymail.mines.edu>
-   * Jiancong Liang <jiancongliang@mymail.mines.edu>
-   * Abhaya Shrestha <ashrestha@mymail.mines.edu>
+   * Partner One <partnerone@Mines.EDU>
+   * Partner Two <partnertwo@Mines.EDU>
+   * Partner Three <partnerthree@Mines.EDU>
 
 .. Replace with the current deliverable you are working on. For example, if you
    are submitting the first deliverable, this should be 1 (as shown).

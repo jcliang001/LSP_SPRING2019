@@ -14,10 +14,11 @@ def pytest_addoption(parser):
 
 @pytest.hookimpl(trylast=True)
 def pytest_collection_modifyitems(config, items):
+    from os import sep
     orig = items[:]
     items.clear()
     for item in orig:
-        d = item.location[0].split('/')[-2]
+        d = item.location[0].split(sep)[-2]
         if ((d in deliverables and config.getoption(d))
                 or d not in deliverables):
             items.append(item)

@@ -522,8 +522,8 @@ def setbang(se: SExpression, stg: LexicalVarStorage):
     try:
         stg[se.car].set(lisp_eval(se.cdr.car, stg))
         return NIL
-    except:
-        raise KeyError("Undefined variable {}".format(str(se.car)))
+    except KeyError as ex:
+        raise KeyError("Undefined variable {}".format(str(se.car))) from ex
 
 
 @BuiltinMacro('eval')
@@ -568,9 +568,10 @@ def eval_(se: SExpression, stg: LexicalVarStorage):
     expression = lisp_eval(se.car, stg)
     if isinstance(expression, ConsList):
         expression = SExpression.from_iterable(
-                        eval_(SExpression(x), stg) for x in expression)
+            eval_(SExpression(x), stg) for x in expression)
 
     return expression
+
 
 @BuiltinFunction('parse')
 def parse_string(code: String):
