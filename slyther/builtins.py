@@ -270,7 +270,7 @@ def lambda_func(se: SExpression, stg: LexicalVarStorage) -> UserFunction:
     >>> f.environ['x'].value
     20
     """
-    return UserFunction(se.car, se.cdr, stg)
+    return UserFunction(se.car, se.cdr, stg.fork())
 
 
 @BuiltinMacro('let')
