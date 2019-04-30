@@ -1,3 +1,6 @@
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
+
 def repl(interpreter, debug=False):
     """
     Take an interpreter object (see ``slyther/interpreter.py``) and give a REPL
@@ -32,7 +35,7 @@ def repl(interpreter, debug=False):
     """
     while True:
         try:
-            expr = input(">")
+            expr = prompt('>', history=FileHistory('history.txt'),)
             print(interpreter.exec(expr))
         except KeyboardInterrupt:
             print("")
