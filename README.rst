@@ -155,3 +155,10 @@ Submitting your Deliverables
 2. Run the ``make_submission.sh`` script.
 
 3. Upload the resulting ``submission.tar.bz2`` to Canvas.
+
+SL D7 Extra Credit
+------------------
+   * The following extensions took 1 hour:
+      * Added history to repl.py
+      * Added auto-suggestion (based on history) to repl.py
+      * Added auto-completion (tab-completion) to repl.py
