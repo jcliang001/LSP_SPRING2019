@@ -148,6 +148,9 @@ def lisp_eval(expr, stg: LexicalVarStorage):
         elif isinstance(expr, SExpression):
             s = lisp_eval(expr.car, stg)
             if isinstance(s, Macro):
+                a = []
+                for x in expr.cdr:
+                    a.append(x)
                 expr = s(expr.cdr, stg)
             elif isinstance(s, Function):
                 a = []
