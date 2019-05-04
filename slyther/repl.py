@@ -1,7 +1,5 @@
 from prompt_toolkit import prompt
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from prompt_toolkit.completion import WordCompleter
 
 def repl(interpreter, debug=False):
     """
@@ -35,16 +33,9 @@ def repl(interpreter, debug=False):
     is set to ``True``, as it allows for easy post-mortem debugging with pdb
     or pudb.
     """
-    # Word completer from slyther.builtins.py
-    slyther_completer = WordCompleter([
-        'abs', 'and', 'car', 'cdr', 'ceil', 'cond', 'cons', 'define', 'eval', 'expt', 'floor', 'floordiv', 'if', 'input', 'lambda', 'let', 'list', 'make-float', 'make-integer', 'make-string', 'make-symbol', 'not', 'or', 'remainder', 'parse', 'print', 'set!', 'sqrt'], ignore_case=True)
-
     while True:
         try:
-            expr = prompt('>',
-                          history=FileHistory('history.txt'),
-                          auto_suggest=AutoSuggestFromHistory(),
-                          completer=slyther_completer)
+            expr = prompt('>', history=FileHistory('history.txt'),)
             print(interpreter.exec(expr))
         except KeyboardInterrupt:
             print("")
