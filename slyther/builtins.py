@@ -411,7 +411,12 @@ def and_(se: SExpression, stg: LexicalVarStorage):
 
     Evaluate left to right, and return the first result which produces
     a falsy value. Note that the result need not be a boolean, but you
-    should test its falsiness, and return the result (even if it's not
+    should test its falsiness(parse(lex('''
+    ...         (cond
+    ...           ((< x 5) (print "x < 5"))
+    ...           ((< x 10) (print "5 <= x < 10"))
+    ...           ((< x 15) (print "10 <= x < 15"))
+    ...           (#t (print "x >= 15")))'''))), and return the result (even if it's not
     a boolean).
 
     Note that you could return the last expression unevaluated if all
@@ -442,7 +447,7 @@ def and_(se: SExpression, stg: LexicalVarStorage):
     >>> lisp_eval(lisp('(and)'), stg)
     NIL
     """
-    res = NIL 
+    res = NIL
     length = len(se)
     for index, x in enumerate(se):
         if index == length - 1:
@@ -595,3 +600,56 @@ def parse_string(code: String):
     ``SExpression`` to a ``ConsList`` for you.
     """
     return next(parse(lex(code)))
+
+# Given an input list, we will count the frequency from the members in the
+# target list.
+@BuiltinFunction('list-frequency')
+def list_frequency(input_list: SExpression, target_list: SExpression):
+    """
+    $slyther
+    >(list_frequency '(12 2 3 3 2 3 2 2 22 12 4 12) '(12 2 3 4))
+    (list (list 12 3) (list 2 4) (list 3 3) (list 4 1))
+
+    """
+    
+    # create an map that stores all the elements from input_list
+    table = {}
+    while input_list is not NIL:
+        key = input_list.car
+        if key in table:
+            table[key] += 1
+        else:
+            table[key] = 1
+        
+        input_list = input_list.cdr
+
+    root = ConsList(0, NIL)
+    res = root
+    check = 0
+    size = len(target_list)
+
+    if size == 0:
+        return NIL
+
+    # delete the keys that are not in the input list 
+    while target_list is not NIL:
+        check += 1
+        key = target_list.car
+        if key in table:
+            value = table[key]
+            root.car = ConsList(key, NIL)
+            root.car.cdr = ConsList(value, NIL)
+        else:
+            root.car = ConsList(key, NIL)
+            root.car.cdr = ConsList(0, NIL)
+        if check != size:
+            root.cdr = ConsList(0, NIL)
+            root = root.cdr
+        
+        target_list = target_list.cdr
+    
+    # generate the result:
+
+    return res
+
+

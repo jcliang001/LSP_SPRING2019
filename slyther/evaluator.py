@@ -163,6 +163,7 @@ def lisp_eval(expr, stg: LexicalVarStorage):
                 else:
                     return tup_holder
             else:
+                print(expr)
                 raise TypeError("'Symbol' object is not callable")
         else:
             return expr
