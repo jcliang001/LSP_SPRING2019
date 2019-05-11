@@ -5,7 +5,7 @@ from slyther.types import (BuiltinFunction, BuiltinMacro, Symbol,
                            Variable, ConsList, NIL, LexicalVarStorage,
                            ConsCell)
 from slyther.evaluator import lisp_eval
-from slyther.parser import lex, parse
+from slyther.parser import lex, parse, lisp
 from math import floor, ceil, sqrt
 
 
@@ -653,3 +653,83 @@ def list_frequency(input_list: SExpression, target_list: SExpression):
     return res
 
 
+@BuiltinFunction('curry')
+def curry(se: SExpression, stg: LexicalVarStorage=LexicalVarStorage({})):
+    """
+    curry returns a user function with given arguments,
+    It will return the user function if it is a user function
+    
+    """
+    if isinstance(se, UserFunction):
+        return se
+
+@BuiltinFunction('plot-scatter')
+def plot_scat(x: ConsList, y:ConsList, option: String):
+    import matplotlib.pyplot as plt
+    """
+    Plots to scatter_plot.pdf given arguments x y respectively
+    """
+    if option == String("--h"):
+        print("Enter your data as follows given x and y \n (plot-scatter '(x1 .. xn) '(y1 ... yn) \"--p)\"\n to plot the graph to scatter_plot.pdf \n (plot-scatter '(x1 .. xn) '(y1 .. yn) \"--h\"\n for help")
+    elif option == String("--p"):
+        data_x = []
+        data_y = []
+        while x is not NIL:
+            data_x.append(x.car)
+            x = x.cdr
+        while y is not NIL:
+            data_y.append(y.car)
+            y = y.cdr
+        print("Your x axis data", data_x)
+        print("Your y axis data", data_y)
+        if len(data_x) != len(data_y):
+            print("Your data lenghts do not match!")
+        else:
+            title = input("Enter the title for this plot: ")
+            xlabel = input("Enter the xlabel for this plot: ")
+            ylabel = input("Enter the ylabel for this plot: ")
+            plt.scatter(x, y)
+            plt.title(title)
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+            plt.savefig("scatter_plot.pdf")
+            print("Your plot is saved as scatter_plot.pdf. Thank You for using Slyther plot!")
+            
+@BuiltinFunction('plot-pie')
+def plot_pie(x: ConsList, y: ConsList, option: String):
+    import matplotlib.pyplot as plt
+    """
+    Plots to pie_plot.pdf given arguments x y respectively
+    """
+    if option == String("--h"):
+        print("Enter your data as follows given labels(x) and y \n (plot-scatter '(x1 .. xn) '(y1 ... yn) \"--p)\"\n to plot the graph to pie_plot.pdf \n (plot-scatter '(x1 .. xn) '(y1 .. yn) \"--h\"\n for help")
+    elif option == String("--p"):
+        data_x = []
+        data_y = []
+        while x is not NIL:
+            data_x.append(x.car)
+            x = x.cdr
+        while y is not NIL:
+            data_y.append(y.car)
+            y = y.cdr
+        print("Your x axis data", data_x)
+        print("Your y axis data", data_y)
+        if len(data_x) != len(data_y):
+            print("Your data lenghts do not match!")
+        else:
+            title = input("Enter the title for this plot: ")
+            patches, texts = plt.pie(data_y, startangle=90)
+            plt.legend(patches, data_x, loc="best")
+            plt.axis('equal')
+            plt.tight_layout()
+            plt.title(title)
+            plt.savefig("pie_plot.pdf")
+            print("Your plot is saved as pie_plot.pdf. Thank You for using Slyther plot!")
+
+@BuiltinFunction('plot?')
+def plot_help():
+    print("To plot scatter plots, use plot-scatter function")
+    print("To learn how to use that function you enter (plot-scatter '() '() \"--h\"")
+    print("")
+    print("To plot pie plots, use plot-pie function")
+    print("To learn how to use the function you can enter (plot-scatter '() '() \"--h\"")
