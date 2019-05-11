@@ -688,7 +688,7 @@ def plot_scat(x: ConsList, y:ConsList, option: String):
             title = input("Enter the title for this plot: ")
             xlabel = input("Enter the xlabel for this plot: ")
             ylabel = input("Enter the ylabel for this plot: ")
-            plt.scatter(x, y, s=5, alpha=0.5) # 5 point radii
+            plt.scatter(x, y, c='r')
             plt.title(title)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
@@ -712,10 +712,6 @@ def plot_pie(x: ConsList, y: ConsList, option: String):
         while y is not NIL:
             data_y.append(y.car)
             y = y.cdr
-        index = 0
-        for data in data_x:
-            data += ' ( '+ str(data_y[index]) + ' )'
-            index += 1
         print("Your x axis data", data_x)
         print("Your y axis data", data_y)
         if len(data_x) != len(data_y):
