@@ -37,3 +37,5 @@ for the pie plot and the y data is the data respective to each legend. In this e
 (plot-pie any-conslist any-conslist "--h")
 will tell the user how the function works
 
+Overall I worked apporixmately 3-5 hours on this deliverable. Most of the time were spent trying
+to figure out curry to no success. 
