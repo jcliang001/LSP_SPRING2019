@@ -688,7 +688,7 @@ def plot_scat(x: ConsList, y:ConsList, option: String):
             title = input("Enter the title for this plot: ")
             xlabel = input("Enter the xlabel for this plot: ")
             ylabel = input("Enter the ylabel for this plot: ")
-            plt.scatter(x, y, c='r')
+            plt.scatter(data_x, data_y, c='r')
             plt.title(title)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
